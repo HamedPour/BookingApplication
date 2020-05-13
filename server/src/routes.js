@@ -1,5 +1,6 @@
+const pool = require("./db/dbPool");
+const guestController = require("./controllers/guestController");
+
 module.exports = (app) => {
-  app.get("/", (req, res) => {
-    res.send("Express is read!");
-  });
+  app.get("/", guestController.index);
 };
