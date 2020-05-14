@@ -8,6 +8,7 @@ module.exports = {
     } catch (error) {
       res.status(500).send(error.message);
     }
+    // send the guest rows to client
     res.status(200).send(guests.rows);
   },
 };
