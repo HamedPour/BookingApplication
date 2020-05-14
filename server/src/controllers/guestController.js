@@ -1,14 +1,13 @@
 const pool = require("../db/dbPool");
 
 module.exports = {
-  index(req, res) {
+  async index(req, res) {
+    let guests;
     try {
-      pool.query("SELECT * FROM roomtype", (err, result) => {
-        pool.end();
-        res.send(result.rows[0].name);
-      });
+      guests = await pool.query("SELECT * FROM guest");
     } catch (error) {
       res.status(500).send(error.message);
     }
+    res.status(200).send(guests.rows);
   },
 };
