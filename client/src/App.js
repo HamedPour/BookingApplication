@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Landing from "./views/LandingPage";
-import About from "./views/About";
+import Guests from "./views/Guests";
 import TopNav from "./components/common/TopNav";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
         <TopNav />
         <Switch>
           <Route path="/" exact component={Landing} />
-          <Route path="/about" component={About} />
+          <Route path="/guests" component={Guests} />
         </Switch>
       </div>
     </Router>

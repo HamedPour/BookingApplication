@@ -11,8 +11,8 @@ function TopNav() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/about" activeClassName="active" className="nav-link">
-            About
+          <NavLink to="/guests" activeClassName="active" className="nav-link">
+            Guests
           </NavLink>
         </li>
       </ul>
