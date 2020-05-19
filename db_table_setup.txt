@@ -1,0 +1,39 @@
+create table if not exists roomtype (
+  id serial not null primary key,
+  name varchar(255) not null unique
+);
+
+create table if not exists room (
+  id serial not null primary key,
+  number int not null unique,
+  roomtypeid int references roomtype(id)
+);
+
+create table if not exists guest (
+  id serial not null primary key,
+  firstname varchar(50) not null,
+  lastname varchar(50) not null
+);
+
+create table if not exists booking (
+  id serial not null primary key,
+  check_in date not null,
+  check_out date not null
+);
+
+create table if not exists records (
+  id serial not null primary key,
+  guestid int references guest(id),
+  roomid int references room(id),
+  bookingid int references booking(id)
+);
+
+insert into guest (firstname, lastname) values ('Hal', 'Bilton');
+
+insert into roomtype (name) values ('Single'), ('Double'), ('Penthouse');
+
+insert into room (number, roomtypeid) values (100, 2);
+
+insert into booking (check_in, check_out) values (to_date('10-10-2020', 'DD-MM-YYYY'), to_date('13-10-2020','DD-MM-YYYY'));
+
+insert into records(guestid, roomid, bookingid) values (1,1,1);
