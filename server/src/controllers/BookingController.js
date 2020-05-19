@@ -22,24 +22,12 @@ module.exports = {
       const bookingId = bookingIdRequest.rows[0].max;
 
       // store user in room
-      let guestRoomType = null;
-      // NOTE TO SELF: CAN WE PLEASE DO THIS SWITCH ON THE CLIENT SIDE
-      switch (roomtype) {
-        case "Single":
-          guestRoomType = 1;
-          break;
-        case "Double":
-          guestRoomType = 2;
-          break;
-        default:
-          guestRoomType = 3;
-          break;
-      }
+      let guestRoomType = Math.floor(Math.random() * 100);
       // NOTE TO SELF: THIS IS NOT HOW WE DO ROOM NUMBER - FIX THIS LATER
-      const roomNumber = 100 + guestRoomType * 2;
+      const roomNumber = 100 + guestRoomType;
       await pool.query(
         "INSERT INTO room (number, roomtypeid) VALUES ($1, $2);",
-        [roomNumber, guestRoomType]
+        [roomNumber, roomtype]
       );
 
       // find roomID

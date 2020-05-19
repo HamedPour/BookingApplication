@@ -15,6 +15,11 @@ function TopNav() {
             Guests
           </NavLink>
         </li>
+        <li className="nav-item">
+          <NavLink to="/booking" activeClassName="active" className="nav-link">
+            Booking
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
