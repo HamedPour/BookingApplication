@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import BookingServices from "../services/BookingServices";
+import { useHistory } from "react-router-dom";
 
-function Form() {
+function Form(props) {
+  const history = useHistory();
   const [metadata, setMetadata] = useState({
     firstname: "",
     lastname: "",
@@ -9,11 +10,14 @@ function Form() {
     check_out: "",
     roomtype: "1",
   });
+
   function formSubmit(e) {
     e.preventDefault();
     // setup redirect as well please
-    BookingServices.store(metadata);
+    props.triggerFormSubmit(metadata);
+    history.push(props.triggerRoute);
   }
+
   return (
     <>
       <form onSubmit={formSubmit}>
