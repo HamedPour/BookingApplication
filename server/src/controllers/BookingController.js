@@ -2,47 +2,44 @@ const pool = require("../db/dbPool");
 
 module.exports = {
   async savebooking(req, res) {
+    debugger;
     const { firstname, lastname, check_in, check_out, roomtype } = req.body;
 
     try {
-      await pool.query(
-        "INSERT INTO guest (firstname, lastname) VALUES ($1, $2)",
+      const guestInsertReturn = await pool.query(
+        "INSERT INTO guest (firstname, lastname) VALUES ($1, $2) RETURNING id;",
         [firstname, lastname]
       );
-      await pool.query(
-        "INSERT INTO booking (check_in, check_out) VALUES (TO_DATE($1, 'DD-MM-YYYY'), TO_DATE($2, 'DD-MM-YYYY'))",
+      const bookingInsertReturn = await pool.query(
+        "INSERT INTO booking (check_in, check_out) VALUES (TO_DATE($1, 'DD-MM-YYYY'), TO_DATE($2, 'DD-MM-YYYY')) RETURNING id;",
         [check_in, check_out]
       );
       // find the guestID
-      const guestIdRequest = await pool.query("SELECT MAX(id) from guest");
-      const guestId = guestIdRequest.rows[0].max;
+      const guestId = guestInsertReturn.rows[0].id;
 
       // find the bookingID
-      const bookingIdRequest = await pool.query("SELECT MAX(id) from booking");
-      const bookingId = bookingIdRequest.rows[0].max;
+      const bookingId = bookingInsertReturn.rows[0].id;
 
       // store user in room
       let guestRoomType = Math.floor(Math.random() * 100);
       // NOTE TO SELF: THIS IS NOT HOW WE DO ROOM NUMBER - FIX THIS LATER
       const roomNumber = 100 + guestRoomType;
-      await pool.query(
-        "INSERT INTO room (number, roomtypeid) VALUES ($1, $2);",
+      const roomInsertReturn = await pool.query(
+        "INSERT INTO room (number, roomtypeid) VALUES ($1, $2) RETURNING id;",
         [roomNumber, roomtype]
       );
 
-      // find roomID
-      const roomIdRequest = await pool.query("SELECT MAX(id) from room");
-      const roomId = roomIdRequest.rows[0].max;
-      // store guestID, bookingID and roomID in records
+      // // find roomID
+      const roomId = roomInsertReturn.rows[0].id;
+
+      // // store guestID, bookingID and roomID in records
       await pool.query(
         "INSERT INTO records (guestid, roomid, bookingid) VALUES ($1, $2, $3);",
         [guestId, roomId, bookingId]
       );
-      res.send(200).send({ message: "User was created" });
     } catch (error) {
-      res.status(500).send(error.message);
+      res.sendStatus(500).send(error.message);
     }
-
-    res.send("Booking Details Saved in Records...");
+    res.sendStatus(200).send({ message: "Guest created successfully" });
   },
 };

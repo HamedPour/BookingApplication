@@ -5,6 +5,6 @@ export default {
     return Api().get("guests");
   },
   delete(anID) {
-    return Api().delete("guests/" + JSON.stringify(anID));
+    // return Api().delete("guests/" + JSON.stringify(anID));
   },
 };
