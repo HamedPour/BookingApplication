@@ -14,6 +14,9 @@ function Guests() {
       });
   }, []);
 
+  function deleteHandler(id) {
+    GuestServices.delete(id);
+  }
   return (
     <>
       <div className="container">
@@ -26,6 +29,12 @@ function Guests() {
                   <h4 className="card-title">{guest.firstname}</h4>
                   <h6 className="card-subtitle">{guest.lastname}</h6>
                 </div>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteHandler(guest.id)}
+                >
+                  Delete
+                </button>
               </div>
             );
           })}

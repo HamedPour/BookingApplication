@@ -38,6 +38,7 @@ module.exports = {
         "INSERT INTO records (guestid, roomid, bookingid) VALUES ($1, $2, $3);",
         [guestId, roomId, bookingId]
       );
+      res.send(200).send({ message: "User was created" });
     } catch (error) {
       res.status(500).send(error.message);
     }
