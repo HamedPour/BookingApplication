@@ -12,8 +12,9 @@ create table if not exists roomtype (
 
 create table if not exists room (
   id serial not null primary key,
-  number int not null unique,
-  roomtypeid int references roomtype(id)
+  number int not null unique CONSTRAINT no_such_room CHECK ((number > 99) AND (number < 110)),
+  roomtypeid int references roomtype(id),
+  vacant boolean not null
 );
 
 create table if not exists guest (
@@ -39,7 +40,7 @@ insert into guest (firstname, lastname) values ('Hal', 'Bilton');
 
 insert into roomtype (name) values ('Single'), ('Double'), ('Penthouse');
 
-insert into room (number, roomtypeid) values (100, 2);
+insert into room (number, roomtypeid, vacant) values (100, 1, TRUE),(101, 1, TRUE),(102, 1, TRUE),(103, 2, TRUE),(104, 2, TRUE),(105, 2, TRUE),(106, 2, TRUE),(107, 2, TRUE),(108, 3, TRUE),(109, 3, TRUE);
 
 insert into booking (check_in, check_out) values (to_date('10-10-2020', 'DD-MM-YYYY'), to_date('13-10-2020','DD-MM-YYYY'));
 

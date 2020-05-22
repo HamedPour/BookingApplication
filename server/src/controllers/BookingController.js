@@ -2,10 +2,36 @@ const pool = require("../db/dbPool");
 
 module.exports = {
   async savebooking(req, res) {
-    debugger;
     const { firstname, lastname, check_in, check_out, roomtype } = req.body;
-
     try {
+      // check to see if db(room) has vacancy for roomtype of choice
+      // if it does collect the room id and number
+      // set that entry's vacant to FALSE.
+      // if not, send error message and return out of function
+      const roomVacancyRequest = await pool.query(
+        "select id, number from room where vacant=TRUE AND roomtypeid=$1;",
+        [roomtype]
+      );
+
+      let roomVacantNumber = null;
+      let roomVacantId = null;
+
+      // if there are no more rooms
+      if (roomVacancyRequest.rowCount === 0) {
+        // No empty rooms free
+        res.send({ message: "Room Not available!" });
+        console.log("No available room");
+        return;
+      } else {
+        // collect roomid and room number
+        roomVacantNumber = roomVacancyRequest.rows[0].number;
+        roomVacantId = roomVacancyRequest.rows[0].id;
+        // set room vacancy to FALSE
+        await pool.query("UPDATE room SET vacant = FALSE WHERE id=$1", [
+          roomVacantId,
+        ]);
+      }
+
       const guestInsertReturn = await pool.query(
         "INSERT INTO guest (firstname, lastname) VALUES ($1, $2) RETURNING id;",
         [firstname, lastname]
@@ -20,26 +46,20 @@ module.exports = {
       // find the bookingID
       const bookingId = bookingInsertReturn.rows[0].id;
 
-      // store user in room
-      let guestRoomType = Math.floor(Math.random() * 100);
-      // NOTE TO SELF: THIS IS NOT HOW WE DO ROOM NUMBER - FIX THIS LATER
-      const roomNumber = 100 + guestRoomType;
-      const roomInsertReturn = await pool.query(
-        "INSERT INTO room (number, roomtypeid) VALUES ($1, $2) RETURNING id;",
-        [roomNumber, roomtype]
-      );
-
-      // // find roomID
-      const roomId = roomInsertReturn.rows[0].id;
-
-      // // store guestID, bookingID and roomID in records
+      // store guestID, bookingID and roomID in records
       await pool.query(
         "INSERT INTO records (guestid, roomid, bookingid) VALUES ($1, $2, $3);",
-        [guestId, roomId, bookingId]
+        [guestId, roomVacantId, bookingId]
       );
-    } catch (error) {
-      res.sendStatus(500).send(error.message);
+      res.send({ message: "Booking successful." });
+    } catch (err) {
+      console.log("Error in BookingController");
+      console.log(err.message);
+
+      res.status(500).send({
+        message: "Opps something wrong with the booking",
+        error: err.message,
+      });
     }
-    res.sendStatus(200).send({ message: "Guest created successfully" });
   },
 };
