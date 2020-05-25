@@ -1,4 +1,4 @@
-# A Div Into the Deep
+# A Dive Into the Deep
 
 ---
 
