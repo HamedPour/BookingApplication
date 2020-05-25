@@ -13,7 +13,6 @@ function Form(props) {
 
   function formSubmit(e) {
     e.preventDefault();
-    // setup redirect as well please
     props.triggerFormSubmit(metadata);
     history.push(props.triggerRoute);
   }

@@ -5,6 +5,8 @@ function Guests() {
   const [guests, setGuests] = useState([]);
 
   useEffect(() => {
+    // Fire off API call to get all guests
+    // introduce debouncer here please
     GuestServices.index()
       .then((res) => {
         setGuests(res.data);
