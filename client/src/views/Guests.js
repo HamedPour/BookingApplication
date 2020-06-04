@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import GuestServices from "../services/GuestServices";
+import useDebounce from "../services/useDebounce";
 
 function Guests() {
   const [guests, setGuests] = useState([]);
+
+  const deBounceGuests = useDebounce(guests, 2000);
 
   useEffect(() => {
     // Fire off API call to get all guests
@@ -14,7 +17,7 @@ function Guests() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [deBounceGuests]);
 
   function deleteHandler(id) {
     GuestServices.delete(id);
